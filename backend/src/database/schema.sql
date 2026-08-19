@@ -1,0 +1,23 @@
+CREATE DATABASE IF NOT EXISTS task_manager
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE task_manager;
+
+CREATE TABLE IF NOT EXISTS categories (
+  ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+)
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  completed TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id_categories INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_categories) REFERENCES categories(id)
+) ENGINE = InnoDB;
+
