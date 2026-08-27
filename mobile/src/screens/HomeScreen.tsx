@@ -19,6 +19,7 @@ import { colors, radius, shadow, spacing, typography } from '../theme';
 import TaskCard from '../components/TaskCard';
 import FilterTabs from '../components/FilterTabs';
 import TaskFormModal from '../components/TaskFormModal';
+import CategoryFormModal from '../components/CategoryFormModal';
 import EmptyState from '../components/EmptyState';
 
 export default function HomeScreen() {
@@ -30,6 +31,7 @@ export default function HomeScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
 
   const loadTasks = useCallback(async () => {
     try {
@@ -137,6 +139,15 @@ export default function HomeScreen() {
               : `${pendingCount} ${pendingCount === 1 ? 'tarefa pendente' : 'tarefas pendentes'}`}
           </Text>
         </View>
+
+        <Pressable
+          style={styles.headerCategoryBtn}
+          onPress={() => setCategoryModalVisible(true)}
+          accessibilityLabel="Criar nova categoria"
+        >
+          <Ionicons name="folder-outline" size={16} color={colors.primary} />
+          <Text style={styles.headerCategoryBtnText}>+ Categoria</Text>
+        </Pressable>
       </View>
 
       <FilterTabs active={filter} onChange={setFilter} />
@@ -190,6 +201,14 @@ export default function HomeScreen() {
         onClose={() => setModalVisible(false)}
         onSave={handleSave}
       />
+
+      <CategoryFormModal
+        visible={categoryModalVisible}
+        onClose={() => setCategoryModalVisible(false)}
+        onSuccess={(_cat) => {
+          Alert.alert('Sucesso', `Categoria "${_cat.title}" criada com sucesso!`);
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -201,9 +220,26 @@ const styles = StyleSheet.create({
     paddingTop: RNStatusBar.currentHeight ?? 0,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
     paddingBottom: spacing.lg,
+  },
+  headerCategoryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: colors.primarySoft,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.md,
+  },
+  headerCategoryBtnText: {
+    fontSize: typography.small,
+    fontWeight: '700',
+    color: colors.primary,
   },
   headerTitle: {
     fontSize: typography.title,

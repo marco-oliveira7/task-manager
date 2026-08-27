@@ -1,16 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import { Task, TaskInput } from '../types';
+import { Ionicons } from '@expo/vector-icons';
+import RNPickerSelect from 'react-native-picker-select';
+import { Categories, Task, TaskInput } from '../types';
 import { colors, radius, spacing, typography } from '../theme';
+import { categoriesService } from '../services/categorieService';
+import CategoryFormModal from './CategoryFormModal';
 
 interface Props {
   visible: boolean;
@@ -22,71 +28,162 @@ interface Props {
 export default function TaskFormModal({ visible, task, onClose, onSave }: Props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
+  const loadCategories = useCallback(async (selectId?: number) => {
+    try {
+      setLoadingCategories(true);
+      const data = await categoriesService.list();
+      setCategories(data);
+      if (selectId) {
+        setSelectedCategoryId(selectId);
+      }
+    } catch (err) {
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Erro ao carregar categorias');
+    } finally {
+      setLoadingCategories(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (visible) {
       setTitle(task?.title ?? '');
       setDescription(task?.description ?? '');
+      setSelectedCategoryId(task?.id_categories ?? null);
+      loadCategories(task?.id_categories);
     }
-  }, [visible, task]);
+  }, [visible, task, loadCategories]);
+
+  const handleCategoryCreated = (newCategory: Categories) => {
+    setCategories((prev) => {
+      const exists = prev.some((c) => c.id === newCategory.id);
+      return exists ? prev : [newCategory, ...prev];
+    });
+    setSelectedCategoryId(newCategory.id);
+  };
 
   const handleSave = () => {
-    if (title.trim() === '') return;
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) {
+      Alert.alert('Atenção', 'O título da tarefa é obrigatório');
+      return;
+    }
+
+    if (!selectedCategoryId) {
+      Alert.alert('Atenção', 'Selecione uma categoria para a tarefa');
+      return;
+    }
+
     onSave({
-      title: title.trim(),
+      title: trimmedTitle,
       description: description.trim() === '' ? null : description.trim(),
+      id_categories: selectedCategoryId,
     });
   };
 
+  const isSaveDisabled = title.trim() === '' || !selectedCategoryId;
+
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.overlay}
-      >
-        <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={styles.sheet}>
-          <View style={styles.handle} />
+    <>
+      <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.overlay}
+        >
+          <Pressable style={styles.backdrop} onPress={onClose} />
+          <View style={styles.sheet}>
+            <View style={styles.handle} />
 
-          <Text style={styles.title}>{task ? 'Editar tarefa' : 'Nova tarefa'}</Text>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+              <Text style={styles.title}>{task ? 'Editar tarefa' : 'Nova tarefa'}</Text>
 
-          <Text style={styles.label}>Título *</Text>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Ex.: Comprar mantimentos"
-            placeholderTextColor={colors.textSecondary}
-            autoFocus
-            returnKeyType="next"
-          />
+              <Text style={styles.label}>Título *</Text>
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Ex.: Comprar mantimentos"
+                placeholderTextColor={colors.textSecondary}
+                autoFocus={!task}
+                returnKeyType="next"
+              />
 
-          <Text style={styles.label}>Descrição (opcional)</Text>
-          <TextInput
-            style={[styles.input, styles.inputMultiline]}
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Adicione mais detalhes..."
-            placeholderTextColor={colors.textSecondary}
-            multiline
-            textAlignVertical="top"
-          />
+              <Text style={styles.label}>Descrição (opcional)</Text>
+              <TextInput
+                style={[styles.input, styles.inputMultiline]}
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Adicione mais detalhes..."
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                textAlignVertical="top"
+              />
 
-          <View style={styles.actions}>
-            <Pressable style={[styles.button, styles.buttonCancel]} onPress={onClose}>
-              <Text style={styles.buttonCancelText}>Cancelar</Text>
-            </Pressable>
-            <Pressable
-              style={[styles.button, styles.buttonSave, title.trim() === '' && styles.buttonDisabled]}
-              onPress={handleSave}
-              disabled={title.trim() === ''}
-            >
-              <Text style={styles.buttonSaveText}>{task ? 'Salvar' : 'Adicionar'}</Text>
-            </Pressable>
+              <View style={styles.categoryHeaderRow}>
+                <Text style={styles.label}>Categoria *</Text>
+                <Pressable
+                  style={styles.addCategoryBtn}
+                  onPress={() => setCategoryModalVisible(true)}
+                  hitSlop={8}
+                >
+                  <Ionicons name="add-circle-outline" size={16} color={colors.primary} />
+                  <Text style={styles.addCategoryBtnText}>Nova categoria</Text>
+                </Pressable>
+              </View>
+
+              <View style={styles.pickerWrapper}>
+                <RNPickerSelect
+                  value={selectedCategoryId}
+                  onValueChange={(value) => setSelectedCategoryId(value)}
+                  placeholder={{
+                    label: loadingCategories ? 'Carregando categorias...' : 'Selecione uma categoria...',
+                    value: null,
+                    color: colors.textSecondary,
+                  }}
+                  items={categories.map((cat) => ({
+                    label: cat.title,
+                    value: cat.id,
+                    key: String(cat.id),
+                  }))}
+                  style={pickerSelectStyles}
+                  useNativeAndroidPickerStyle={false}
+                  Icon={() => (
+                    <Ionicons
+                      name="chevron-down"
+                      size={20}
+                      color={colors.textSecondary}
+                      style={styles.pickerIcon}
+                    />
+                  )}
+                />
+              </View>
+
+              <View style={styles.actions}>
+                <Pressable style={[styles.button, styles.buttonCancel]} onPress={onClose}>
+                  <Text style={styles.buttonCancelText}>Cancelar</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonSave, isSaveDisabled && styles.buttonDisabled]}
+                  onPress={handleSave}
+                  disabled={isSaveDisabled}
+                >
+                  <Text style={styles.buttonSaveText}>{task ? 'Salvar' : 'Adicionar'}</Text>
+                </Pressable>
+              </View>
+            </ScrollView>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      <CategoryFormModal
+        visible={categoryModalVisible}
+        onClose={() => setCategoryModalVisible(false)}
+        onSuccess={handleCategoryCreated}
+      />
+    </>
   );
 }
 
@@ -106,6 +203,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
     paddingBottom: spacing.xxxl,
+    maxHeight: '90%',
   },
   handle: {
     alignSelf: 'center',
@@ -141,6 +239,29 @@ const styles = StyleSheet.create({
   inputMultiline: {
     minHeight: 96,
   },
+  categoryHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+  addCategoryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  addCategoryBtnText: {
+    fontSize: typography.small,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  pickerWrapper: {
+    marginBottom: spacing.xl,
+  },
+  pickerIcon: {
+    marginRight: spacing.md,
+    marginTop: 14,
+  },
   actions: {
     flexDirection: 'row',
     gap: spacing.md,
@@ -152,6 +273,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 48,
   },
   buttonCancel: {
     backgroundColor: colors.background,
@@ -171,5 +293,45 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.5,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    fontSize: typography.body,
+    color: colors.text,
+    paddingRight: 40,
+  },
+  inputAndroid: {
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    fontSize: typography.body,
+    color: colors.text,
+    paddingRight: 40,
+  },
+  inputWeb: {
+    backgroundColor: colors.background,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    fontSize: typography.body,
+    color: colors.text,
+    paddingRight: 40,
+  },
+  iconContainer: {
+    top: 0,
+    right: 0,
   },
 });

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import taskRoutes from './routes/task.routes';
+import categorieRoutes from './routes/categorie.routes';
 
 const app = express();
 
@@ -12,5 +13,6 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/api', taskRoutes);
+app.use('/api', categorieRoutes);
 
 export default app;

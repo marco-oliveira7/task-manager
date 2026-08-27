@@ -43,7 +43,17 @@ export default function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
             {task.description}
           </Text>
         ) : null}
-        <Text style={styles.date}>{formatDate(task.created_at)}</Text>
+        <View style={styles.metaRow}>
+          {task.category_title ? (
+            <View style={styles.categoryBadge}>
+              <Ionicons name="folder-outline" size={12} color={colors.primary} />
+              <Text style={styles.categoryBadgeText} numberOfLines={1}>
+                {task.category_title}
+              </Text>
+            </View>
+          ) : null}
+          <Text style={styles.date}>{formatDate(task.created_at)}</Text>
+        </View>
       </View>
 
       <View style={styles.actions}>
@@ -98,8 +108,28 @@ const styles = StyleSheet.create({
   date: {
     fontSize: typography.caption,
     color: colors.textSecondary,
-    marginTop: spacing.sm,
     textTransform: 'capitalize',
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  categoryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.primarySoft,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+  },
+  categoryBadgeText: {
+    fontSize: typography.caption,
+    fontWeight: '600',
+    color: colors.primary,
   },
   actions: {
     flexDirection: 'row',
