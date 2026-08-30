@@ -43,18 +43,11 @@ export default function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
             {task.description}
           </Text>
         ) : null}
-<<<<<<< HEAD
-        <View style={styles.metaRow}>
-          {task.category_title ? (
-            <View style={styles.categoryBadge}>
-              <Ionicons name="folder-outline" size={12} color={colors.primary} />
-=======
 
         <View style={styles.metaRow}>
           {task.category_title ? (
             <View style={styles.categoryBadge}>
               <Ionicons name="pricetag-outline" size={11} color={colors.primary} />
->>>>>>> f2660b0 (inserir tarefas funcionando, banco de dados arrumado, seed.sql.)
               <Text style={styles.categoryBadgeText} numberOfLines={1}>
                 {task.category_title}
               </Text>
