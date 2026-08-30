@@ -28,9 +28,6 @@ export async function apiRequest<T>(path: string, options?: RequestInit): Promis
     ...options,
   });
 
-  console.log(response.ok);
-  
-
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.message || `Erro na requisição (${response.status})`);

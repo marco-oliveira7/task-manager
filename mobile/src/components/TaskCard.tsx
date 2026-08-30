@@ -43,10 +43,18 @@ export default function TaskCard({ task, onToggle, onEdit, onDelete }: Props) {
             {task.description}
           </Text>
         ) : null}
+<<<<<<< HEAD
         <View style={styles.metaRow}>
           {task.category_title ? (
             <View style={styles.categoryBadge}>
               <Ionicons name="folder-outline" size={12} color={colors.primary} />
+=======
+
+        <View style={styles.metaRow}>
+          {task.category_title ? (
+            <View style={styles.categoryBadge}>
+              <Ionicons name="pricetag-outline" size={11} color={colors.primary} />
+>>>>>>> f2660b0 (inserir tarefas funcionando, banco de dados arrumado, seed.sql.)
               <Text style={styles.categoryBadgeText} numberOfLines={1}>
                 {task.category_title}
               </Text>
@@ -104,6 +112,27 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: spacing.xs,
     lineHeight: 18,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  categoryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.primarySoft,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+  },
+  categoryBadgeText: {
+    fontSize: typography.caption,
+    fontWeight: '600',
+    color: colors.primary,
   },
   date: {
     fontSize: typography.caption,

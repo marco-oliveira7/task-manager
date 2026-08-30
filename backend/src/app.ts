@@ -1,7 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import taskRoutes from './routes/task.routes';
+<<<<<<< HEAD
 import categorieRoutes from './routes/categorie.routes';
+=======
+import categoryRoutes from './routes/category.routes';
+>>>>>>> f2660b0 (inserir tarefas funcionando, banco de dados arrumado, seed.sql.)
 
 const app = express();
 
@@ -13,6 +17,10 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/api', taskRoutes);
+<<<<<<< HEAD
 app.use('/api', categorieRoutes);
+=======
+app.use('/api', categoryRoutes);
+>>>>>>> f2660b0 (inserir tarefas funcionando, banco de dados arrumado, seed.sql.)
 
 export default app;

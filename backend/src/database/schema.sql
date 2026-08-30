@@ -6,12 +6,18 @@ USE task_manager;
 
 CREATE TABLE IF NOT EXISTS categories (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+<<<<<<< HEAD
   title VARCHAR(255) NOT NULL,
   PRIMARY KEY (id)
 );
+=======
+  title VARCHAR(255) NOT NULL UNIQUE,
+  PRIMARY KEY (id)
+) ENGINE = InnoDB;
+>>>>>>> f2660b0 (inserir tarefas funcionando, banco de dados arrumado, seed.sql.)
 
 CREATE TABLE IF NOT EXISTS tasks (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
   title VARCHAR(255) NOT NULL,
   description TEXT NULL,
   completed TINYINT(1) NOT NULL DEFAULT 0,
@@ -20,4 +26,3 @@ CREATE TABLE IF NOT EXISTS tasks (
   PRIMARY KEY (id),
   FOREIGN KEY (id_categories) REFERENCES categories(id)
 ) ENGINE = InnoDB;
-
