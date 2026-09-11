@@ -85,7 +85,7 @@ export default function HomeScreen() {
       setTasks((current) => current.map((item) => (item.id === updated.id ? updated : item)));
     } catch (err) {
       setTasks(previous);
-      Alert.alert('Erro', err instanceof Error ? err.message : 'Não foi possível atualizar a tarefa');
+      Alert.alert('Error', err instanceof Error ? err.message : 'Não foi possível atualizar a tarefa');
     }
   };
 

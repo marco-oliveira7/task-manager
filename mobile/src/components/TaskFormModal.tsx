@@ -103,27 +103,27 @@ export default function TaskFormModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      {" "}
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.overlay}
       >
-        {" "}
-        <Pressable style={styles.backdrop} onPress={onClose} />{" "}
+        
+        <Pressable style={styles.backdrop} onPress={onClose} />
         <View style={styles.sheet}>
-          {" "}
-          <View style={styles.handle} />{" "}
+          
+          <View style={styles.handle} />
           <ScrollView
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={styles.scrollContent}
           >
-            {" "}
+            
             <Text style={styles.title}>
-              {" "}
-              {task ? "Editar tarefa" : "Nova tarefa"}{" "}
-            </Text>{" "}
-            <Text style={styles.label}> Título * </Text>{" "}
+              
+              {task ? "Editar tarefa" : "Nova tarefa"}
+            </Text>
+            <Text style={styles.label}> Título * </Text>
             <TextInput
               style={styles.input}
               value={title}
@@ -132,8 +132,8 @@ export default function TaskFormModal({
               placeholderTextColor={colors.textSecondary}
               autoFocus={!task}
               returnKeyType="next"
-            />{" "}
-            <Text style={styles.label}> Descrição (opcional) </Text>{" "}
+            />
+            <Text style={styles.label}> Descrição (opcional) </Text>
             <TextInput
               style={[styles.input, styles.inputMultiline]}
               value={description}
@@ -142,31 +142,31 @@ export default function TaskFormModal({
               placeholderTextColor={colors.textSecondary}
               multiline
               textAlignVertical="top"
-            />{" "}
+            />
             <View style={styles.categoryHeader}>
-              {" "}
-              <Text style={styles.label}> Categoria * </Text>{" "}
+              
+              <Text style={styles.label}> Categoria * </Text>
               {!showNewCategory && (
                 <Pressable
                   style={styles.addCategoryLink}
                   onPress={() => setShowNewCategory(true)}
                 >
-                  {" "}
+                  
                   <Ionicons
                     name="add-circle-outline"
                     size={16}
                     color={colors.primary}
-                  />{" "}
+                  />
                   <Text style={styles.addCategoryLinkText}>
-                    {" "}
-                    Nova categoria{" "}
-                  </Text>{" "}
+                    
+                    Nova categoria
+                  </Text>
                 </Pressable>
-              )}{" "}
-            </View>{" "}
+              )}
+            </View>
             {showNewCategory && (
               <View style={styles.newCategoryContainer}>
-                {" "}
+                
                 <TextInput
                   style={styles.newCategoryInput}
                   value={newCategoryName}
@@ -175,7 +175,7 @@ export default function TaskFormModal({
                   placeholderTextColor={colors.textSecondary}
                   autoFocus
                   editable={!creatingCategory}
-                />{" "}
+                />
                 <Pressable
                   style={[
                     styles.newCategoryButton,
@@ -185,13 +185,13 @@ export default function TaskFormModal({
                   onPress={handleCreateCategory}
                   disabled={newCategoryName.trim() === "" || creatingCategory}
                 >
-                  {" "}
+                  
                   {creatingCategory ? (
                     <ActivityIndicator size="small" color={colors.white} />
                   ) : (
                     <Ionicons name="checkmark" size={18} color={colors.white} />
-                  )}{" "}
-                </Pressable>{" "}
+                  )}
+                </Pressable>
                 <Pressable
                   style={[
                     styles.newCategoryButton,
@@ -203,31 +203,31 @@ export default function TaskFormModal({
                   }}
                   disabled={creatingCategory}
                 >
-                  {" "}
+                  
                   <Ionicons
                     name="close"
                     size={18}
                     color={colors.textSecondary}
-                  />{" "}
-                </Pressable>{" "}
+                  />
+                </Pressable>
               </View>
-            )}{" "}
+            )}
             {loadingCategories ? (
               <View style={styles.categoriesLoading}>
-                {" "}
-                <ActivityIndicator size="small" color={colors.primary} />{" "}
+                
+                <ActivityIndicator size="small" color={colors.primary} />
               </View>
             ) : categories.length === 0 ? (
               <View style={styles.emptyCategories}>
-                {" "}
+                
                 <Text style={styles.emptyCategoriesText}>
-                  {" "}
-                  Nenhuma categoria cadastrada.{" "}
-                </Text>{" "}
+                  
+                  Nenhuma categoria cadastrada.
+                </Text>
               </View>
             ) : (
               <View style={styles.chipsContainer}>
-                {" "}
+                
                 {categories.map((cat) => {
                   const isSelected = categoryId === cat.id;
                   return (
@@ -236,36 +236,36 @@ export default function TaskFormModal({
                       style={[styles.chip, isSelected && styles.chipSelected]}
                       onPress={() => setCategoryId(cat.id)}
                     >
-                      {" "}
+                      
                       <Ionicons
                         name="pricetag-outline"
                         size={14}
                         color={isSelected ? colors.white : colors.primary}
                         style={styles.chipIcon}
-                      />{" "}
+                      />
                       <Text
                         style={[
                           styles.chipText,
                           isSelected && styles.chipTextSelected,
                         ]}
                       >
-                        {" "}
-                        {cat.title}{" "}
-                      </Text>{" "}
+                        
+                        {cat.title}
+                      </Text>
                     </Pressable>
                   );
-                })}{" "}
+                })}
               </View>
-            )}{" "}
+            )}
             <View style={styles.actions}>
-              {" "}
+              
               <Pressable
                 style={[styles.button, styles.buttonCancel]}
                 onPress={onClose}
               >
-                {" "}
-                <Text style={styles.buttonCancelText}> Cancelar </Text>{" "}
-              </Pressable>{" "}
+                
+                <Text style={styles.buttonCancelText}> Cancelar </Text>
+              </Pressable>
               <Pressable
                 style={[
                   styles.button,
@@ -275,16 +275,16 @@ export default function TaskFormModal({
                 onPress={handleSave}
                 disabled={isSaveDisabled}
               >
-                {" "}
+                
                 <Text style={styles.buttonSaveText}>
-                  {" "}
-                  {task ? "Salvar" : "Adicionar"}{" "}
-                </Text>{" "}
-              </Pressable>{" "}
-            </View>{" "}
-          </ScrollView>{" "}
-        </View>{" "}
-      </KeyboardAvoidingView>{" "}
+                  
+                  {task ? "Salvar" : "Adicionar"}
+                </Text>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
