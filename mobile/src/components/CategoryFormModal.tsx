@@ -11,14 +11,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { Categories } from '../types';
+import { Category } from '../types';
 import { categoriesService } from '../services/categorieService';
 import { colors, radius, spacing, typography } from '../theme';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onSuccess: (newCategory: Categories) => void;
+  onSuccess: (newCategory: Category) => void;
 }
 
 export default function CategoryFormModal({ visible, onClose, onSuccess }: Props) {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(15, 18, 25, 0.55)',
   },
   dialog: {

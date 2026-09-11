@@ -132,27 +132,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textTransform: 'capitalize',
   },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: spacing.sm,
-  },
-  categoryBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.primarySoft,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: radius.sm,
-  },
-  categoryBadgeText: {
-    fontSize: typography.caption,
-    fontWeight: '600',
-    color: colors.primary,
-  },
+  // styles above already include metaRow, categoryBadge and categoryBadgeText
   actions: {
     flexDirection: 'row',
     gap: spacing.sm,

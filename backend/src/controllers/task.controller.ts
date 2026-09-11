@@ -119,11 +119,8 @@ export async function updateTask(req: Request, res: Response) {
           : Number(id_categories)
         : current.id_categories;
 
-    const rawCat = id_categories ?? categoryId;
-    const newIdCategories =
-      rawCat !== undefined && Number.isInteger(Number(rawCat)) && Number(rawCat) > 0
-        ? Number(rawCat)
-        : current.id_categories;
+    // `newCategoryId` already holds the resolved category id (or null/current),
+    // so we use it directly. Removed unused/incorrect variables.
 
     if (newTitle === '') {
       return res.status(400).json({ message: 'O título da tarefa é obrigatório' });

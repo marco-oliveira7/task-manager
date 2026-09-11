@@ -1,13 +1,13 @@
 import { apiRequest } from './api';
-import { Categories, CategoriesInput } from '../types';
+import { Category } from '../types';
 
 export const categoriesService = {
-  list(): Promise<Categories[]> {
-    return apiRequest<Categories[]>('/categories');
+  list(): Promise<Category[]> {
+    return apiRequest<Category[]>('/categories');
   },
 
-  create(data: CategoriesInput): Promise<Categories> {
-    return apiRequest<Categories>('/categories', {
+  create(data: { title: string }): Promise<Category> {
+    return apiRequest<Category>('/categories', {
       method: 'POST',
       body: JSON.stringify(data),
     });
